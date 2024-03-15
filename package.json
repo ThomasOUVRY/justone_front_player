@@ -1,0 +1,46 @@
+{
+  "name": "justone_player_front",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@reduxjs/toolkit": "^2.2.1",
+    "@tanstack/react-query": "^5.28.0",
+    "@tanstack/react-router": "^1.19.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-redux": "^9.1.0",
+    "react-toastify": "^10.0.4",
+    "react-use-websocket": "^4.8.1",
+    "redux": "^5.0.1"
+  },
+  "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.27.7",
+    "@tanstack/router-devtools": "^1.19.8",
+    "@tanstack/router-vite-plugin": "^1.19.6",
+    "@types/react": "^18.2.64",
+    "@types/react-dom": "^18.2.21",
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.18",
+    "daisyui": "^4.7.3",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "postcss": "^8.4.35",
+    "sass": "^1.71.1",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.6"
+  }
+}
