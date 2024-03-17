@@ -1,34 +1,24 @@
-/*
-    This component is responsible for displaying the countdown
-    and the round ended message.
-
-    On the end of the round, the component should display the hint given by the player (stored in the store).
- */
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getJustOneRound,
-  updateRoundDuration,
-} from "../../store/justOneRoundSlice.ts";
-import { useEffect } from "react";
+import { useReceiveMessage } from "../../hooks/useReceiveMessage.ts";
+import { useDispatch } from "react-redux";
+import { endRound } from "../../store/justOneRound.slice.ts";
+import { CSSProperties } from "react";
 
 export const Countdown = () => {
-  const { roundRemainingDuration, roundIsEnded } = useSelector(getJustOneRound);
+  const message = useReceiveMessage("justone-round-time");
+  const roundIsEnded = message?.secondsRemaining === 0;
+
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!roundIsEnded) {
-      const interval = setInterval(() => {
-        dispatch(updateRoundDuration(roundRemainingDuration - 1));
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [roundRemainingDuration]);
+  if (roundIsEnded) {
+    dispatch(endRound());
+  }
 
   return (
     <div>
       <span className="countdown">
-        <span style={{ "--value": roundRemainingDuration }}></span>
+        <span
+          style={{ "--value": message?.secondsRemaining } as CSSProperties}
+        ></span>
       </span>
       {roundIsEnded && <div>Round ended !</div>}
     </div>

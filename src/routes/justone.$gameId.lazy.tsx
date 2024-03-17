@@ -4,7 +4,8 @@ import { JustOneGameConfiguration } from "../models/justOneGameConfig.ts";
 import { Countdown } from "../components/justOne/Countdown.tsx";
 import { GiveHint } from "../components/justOne/GiveHint.tsx";
 import { useDispatch, useSelector } from "react-redux";
-import { getIsGuessing, initRound } from "../store/justOneRoundSlice.ts";
+import { getIsGuessing, initRound } from "../store/justOneRound.slice.ts";
+import { RoundDisplay } from "../components/justOne/RoundDisplay.tsx";
 
 export const Route = createLazyFileRoute("/justone/$gameId")({
   component: JustOne,
@@ -14,7 +15,7 @@ export function JustOne() {
   const dispatch = useDispatch();
 
   const { gameId } = Route.useParams();
-  const isGuessing = useSelector(getIsGuessing);
+  const isGuessing: boolean = useSelector(getIsGuessing);
 
   useEffect(() => {
     fetch(
@@ -22,7 +23,6 @@ export function JustOne() {
     )
       .then((response) => response.json() as Promise<JustOneGameConfiguration>)
       .then((data) => {
-        console.log("data", data);
         dispatch(
           initRound({
             roundDuration: data.roundSecondsDuration,
@@ -33,10 +33,11 @@ export function JustOne() {
 
   return (
     <div>
+      <RoundDisplay />
       <Countdown />
 
       {isGuessing && <div>Guessing</div>}
-      {!isGuessing && <GiveHint />}
+      {!isGuessing && <GiveHint gameId={gameId} />}
     </div>
   );
 }

@@ -1,1 +1,4 @@
-export type JustOneGameConfiguration = { roundSecondsDuration: number };
+export type JustOneGameConfiguration = {
+  currentRound: number;
+  roundSecondsDuration: number;
+};

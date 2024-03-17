@@ -1,7 +1,7 @@
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getName } from "../store/nameSlice.ts";
+import { getName } from "../store/name.slice";
 import { useEffect } from "react";
 import { useReceiveStartGameMessage } from "../hooks/useReceiveStartGameMessage.ts";
 import { useSendMessage } from "../hooks/useSendMessage.ts";

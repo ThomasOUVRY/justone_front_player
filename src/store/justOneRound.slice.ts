@@ -15,13 +15,16 @@ const justOneRoundSlice = createSlice({
     roundIsEnded: false,
   } as JustOneRoundSlice,
   reducers: {
+    endRound: (state) => {
+      state.roundIsEnded = true;
+    },
     updateHint: (state, action) => {
       state.hint = action.payload;
     },
     updateIsGuessing: (state, action) => {
       state.isGuessing = action.payload;
     },
-    updateRoundDuration: (state, action) => {
+    updateRemainingDuration: (state, action) => {
       state.roundRemainingDuration = action.payload;
       if (state.roundRemainingDuration <= 0) {
         state.roundIsEnded = true;
@@ -49,8 +52,9 @@ const justOneRoundSlice = createSlice({
 });
 
 export const {
+  endRound,
   initRound,
-  updateRoundDuration,
+  updateRemainingDuration,
   updateHint,
   resetRound,
   updateIsGuessing,

@@ -1,9 +1,9 @@
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import useWebSocket from "react-use-websocket";
 import { useDispatch } from "react-redux";
-import { updateName } from "../store/nameSlice.ts";
+import { updateName } from "../store/name.slice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useSendMessage } from "../hooks/useSendMessage.ts";
 
 export const Route = createLazyFileRoute("/register/$gameId")({
   component: Index,
@@ -15,18 +15,13 @@ function Index() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { sendMessage } = useWebSocket(import.meta.env.VITE_WS_URL);
+  const sendJoinGame = useSendMessage("join-game");
 
   const sendGameParticipation = async () => {
-    sendMessage(
-      JSON.stringify({
-        topic: "join-game",
-        message: {
-          gameCode: gameId,
-          name,
-        },
-      }),
-    );
+    sendJoinGame({
+      gameCode: gameId,
+      name,
+    });
     dispatch(updateName(name));
     navigate({ to: "/hub/$gameId", params: { gameId } });
   };
