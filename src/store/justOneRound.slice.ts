@@ -36,24 +36,21 @@ const justOneRoundSlice = createSlice({
     updateIsGuessing: (state, action) => {
       state.isGuessing = action.payload;
     },
-    updateRemainingDuration: (state, action) => {
-      state.roundRemainingDuration = action.payload;
-      if (state.roundRemainingDuration <= 0) {
-        state.roundIsEnded = true;
-      }
-    },
     resetRound: (state) => {
       state.hint = "";
       state.roundIsEnded = false;
     },
-    initRound: (state, action) => {
+    initRound: (state) => {
       state.hint = "";
       state.isGuessing = false;
       state.roundIsEnded = false;
-      state.roundRemainingDuration = action.payload.roundDuration;
     },
     updateWordToGuess: (state, action) => {
       state.wordToGuess = action.payload;
+    },
+    updateRoundGuesserConfig(state, action) {
+      state.wordToGuess = action.payload.wordToGuess;
+      state.isGuessing = action.payload.isGuessing;
     },
   },
   selectors: {
@@ -71,13 +68,13 @@ const justOneRoundSlice = createSlice({
 export const {
   endRound,
   initRound,
-  updateRemainingDuration,
   updateHint,
   resetRound,
   updateIsGuessing,
   startRoundTransition,
   endRoundTransition,
   updateWordToGuess,
+  updateRoundGuesserConfig,
 } = justOneRoundSlice.actions;
 export const {
   getRoundRemainingDuration,

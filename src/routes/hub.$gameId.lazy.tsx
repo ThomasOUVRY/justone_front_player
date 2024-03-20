@@ -3,11 +3,9 @@ import { useEffect } from "react";
 import { useReceiveStartGameMessage } from "../hooks/useReceiveStartGameMessage.ts";
 import { useSendMessage } from "../hooks/useSendMessage.ts";
 import { NavigationControl } from "../components/shared/NavigationControl.tsx";
-import { RoundTransitionScreen } from "../components/justOne/RoundTransitionScreen.tsx";
 import { useReceiveMessage } from "../hooks/useReceiveMessage.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  endRoundTransition,
   isRoundInTransition,
   startRoundTransition,
 } from "../store/justOneRound.slice.ts";
@@ -27,24 +25,19 @@ function Hub() {
   const sendLeaveMessage = useSendMessage("leave-game");
   const gameStartedMessage = useReceiveStartGameMessage(gameId);
 
-  const startGameRoundTransitionmessage = useReceiveMessage(
-    "justone-round-transition",
+  const initGameRoundTransitionMessage = useReceiveMessage(
+    "justone-init-game-transition",
   );
   const isInRoundTransition = useSelector(isRoundInTransition);
 
   useEffect(() => {
-    if (startGameRoundTransitionmessage) {
+    if (initGameRoundTransitionMessage) {
       dispatch(
-        startRoundTransition(
-          startGameRoundTransitionmessage.transitionDuration,
-        ),
+        startRoundTransition(initGameRoundTransitionMessage.transitionDuration),
       );
-      setTimeout(() => {
-        dispatch(endRoundTransition());
-        navigate({ to: "/justone/$gameId", params: { gameId } });
-      }, startGameRoundTransitionmessage.transitionDuration * 1000);
+      navigate({ to: "/justone/$gameId", params: { gameId } });
     }
-  }, [startGameRoundTransitionmessage]);
+  }, [initGameRoundTransitionMessage]);
 
   useEffect(() => {
     if (
@@ -99,27 +92,20 @@ function Hub() {
 
   return (
     <main className="min-h-[100dvh] w-full flex flex-col items-center justify-center">
-      {!isInRoundTransition && (
-        <>
-          <NavigationControl className={"justify-self-start"} />
-          <div
-            className={"flex-1 flex flex-col items-center justify-center gap-8"}
-          >
-            <h1
-              className={
-                "card bg-primary-content border-primary border-2 p-4 text-4xl w-full"
-              }
-            >
-              Code de la partie <span className={"text-5xl"}>{gameId}</span>
-            </h1>
+      <NavigationControl className={"justify-self-start"} />
+      <div className={"flex-1 flex flex-col items-center justify-center gap-8"}>
+        <h1
+          className={
+            "card bg-primary-content border-primary border-2 p-4 text-4xl w-full"
+          }
+        >
+          Code de la partie <span className={"text-5xl"}>{gameId}</span>
+        </h1>
 
-            <h2 className={"text-3xl"}>
-              Veuillez attendre que le maitre de jeu lance la partie
-            </h2>
-          </div>
-        </>
-      )}
-      {isInRoundTransition && <RoundTransitionScreen />}
+        <h2 className={"text-3xl"}>
+          Veuillez attendre que le maitre de jeu lance la partie
+        </h2>
+      </div>
     </main>
   );
 }

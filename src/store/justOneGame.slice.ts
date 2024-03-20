@@ -1,16 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export type JustOneRoundSlice = {
+export type JustOneGameSlice = {
   currentRound: number;
   nbRounds: number;
   gameIsEnded: boolean;
+  roundSecondsDuration: number;
 };
 
 const justOneRoundSlice = createSlice({
   name: "justOneGame",
   initialState: {
     currentRound: 1,
-  } as JustOneRoundSlice,
+  } as JustOneGameSlice,
   reducers: {
     resetGame: (state) => {
       state.currentRound = 1;
@@ -26,14 +27,11 @@ const justOneRoundSlice = createSlice({
     updateGameConfig: (state, action) => {
       state.nbRounds = action.payload.nbRounds;
       state.currentRound = action.payload.currentRound;
-
-      if (state.currentRound > state.nbRounds) {
-        state.gameIsEnded = true;
-      }
+      state.roundSecondsDuration = action.payload.roundSecondsDuration;
     },
   },
   selectors: {
-    getGameConfig: (state): JustOneRoundSlice => state,
+    getGameConfig: (state): JustOneGameSlice => state,
     getCurrentRound: (state): number => state.currentRound,
     isGameEnded: (state): boolean => state.gameIsEnded,
   },

@@ -29,6 +29,7 @@ export type MessageResponseMap = {
   "join-game": JoinGameMessageResponse;
   "leave-game": LeaveGameMessageResponse;
   "start-game": StartGameMessageResponse;
+  "justone-init-game-transition": JustOneRoundTransitionMessageResponse;
   "justone-round-time": JustOneRoundTimeMessageResponse;
   "justone-round-transition": JustOneRoundTransitionMessageResponse;
   "justone-next-round": JustOneNextRoundMessageResponse;

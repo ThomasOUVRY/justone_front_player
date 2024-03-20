@@ -13,23 +13,24 @@ import { RoundGuesser } from "../../models/RoundGuesser.ts";
 import { useReceiveMessage } from "../../hooks/useReceiveMessage.ts";
 
 export function RoundTransitionScreen() {
-  const currentRound = useSelector(getCurrentRound);
+  const playerName = localStorage.getItem("name") ?? "";
+  const dispatch = useDispatch();
   const { gameId } = Route.useParams();
 
+  const currentRound = useSelector(getCurrentRound);
   const roundInTransition = useSelector(isRoundInTransition);
   const roundTransitionDuration = useSelector(getTransitionDuration);
+
   const [transitionTimeSpent, setTransitionTimeSpent] = useState(0);
-  const nextRoundMessage = useReceiveMessage("justone-next-round");
+  const roundTransitionMessage = useReceiveMessage("justone-round-transition");
 
   useEffect(() => {
-    if (nextRoundMessage) {
+    if (roundTransitionMessage) {
       setTransitionTimeSpent(0);
     }
-  }, [nextRoundMessage]);
+  }, [roundTransitionMessage]);
 
-  const playerName = localStorage.getItem("name") ?? "";
   const willGuess = useSelector(getIsGuessing);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (roundInTransition) {
@@ -43,33 +44,32 @@ export function RoundTransitionScreen() {
         });
 
       const interval = setInterval(() => {
-        setTransitionTimeSpent((prev) => prev + 1);
+        setTransitionTimeSpent((prev) => prev + 0.01);
       }, 1000);
       return () => clearInterval(interval);
     }
   }, [roundInTransition]);
 
+  if (!roundInTransition) {
+    return;
+  }
+
   return (
-    <>
-      {roundInTransition && (
-        <div className={"flex flex-col items-center"}>
-          <div>
-            <div
-              className="radial-progress"
-              style={
-                {
-                  "--value": `${(transitionTimeSpent / roundTransitionDuration) * 100}`,
-                } as CSSProperties
-              }
-              role="progressbar"
-            ></div>
-          </div>
-          <div>La prochaine manche arrive !</div>
-          {willGuess && <div>Vous allez devoir deviner</div>}
-          {!willGuess && <div>Vous allez devoir faire deviner</div>}
-        </div>
-      )}
-      {roundInTransition && <></>}
-    </>
+    <div className={"flex flex-col items-center"}>
+      <div>
+        <div
+          className="radial-progress"
+          style={
+            {
+              "--value": `${(transitionTimeSpent / roundTransitionDuration) * 100}`,
+            } as CSSProperties
+          }
+          role="progressbar"
+        ></div>
+      </div>
+      <div>La prochaine manche arrive !</div>
+      {willGuess && <div>Vous allez devoir deviner</div>}
+      {!willGuess && <div>Vous allez devoir faire deviner</div>}
+    </div>
   );
 }
