@@ -2,8 +2,9 @@ import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateName } from "../store/name.slice";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSendMessage } from "../hooks/useSendMessage.ts";
+import { NavigationControl } from "../components/shared/NavigationControl.tsx";
+import { GameName } from "../components/shared/GameName.tsx";
 
 export const Route = createLazyFileRoute("/register/$gameId")({
   component: Index,
@@ -11,7 +12,7 @@ export const Route = createLazyFileRoute("/register/$gameId")({
 
 function Index() {
   const { gameId } = Route.useParams();
-  const [name, setName] = useState<string>("");
+  const [name, setName] = useState<string>(localStorage.getItem("name") ?? "");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -23,6 +24,7 @@ function Index() {
       name,
     });
     dispatch(updateName(name));
+    localStorage.setItem("name", name);
     navigate({ to: "/hub/$gameId", params: { gameId } });
   };
 
@@ -31,14 +33,10 @@ function Index() {
   };
 
   return (
-    <main className="min-h-[100dvh] w-full flex flex-col items-center justify-center">
-      <FontAwesomeIcon
-        icon={["fas", "arrow-left"]}
-        onClick={() => navigate({ to: "/" })}
-        color={"#000"}
-      ></FontAwesomeIcon>
-
-      <div className={"flex flex-col items-center justify-center p-4"}>
+    <main className="min-h-[100dvh] flex flex-col items-center justify-center ">
+      <NavigationControl className={"justify-self-start"} />
+      <div className={"flex-1 flex flex-col items-center justify-center p-4"}>
+        <GameName />
         <fieldset className={"w-full py-2"}>
           <legend className={"w-full"}>Votre nom</legend>
           <input

@@ -2,9 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export type JustOneRoundSlice = {
   hint: string;
+  wordToGuess: string;
   isGuessing: boolean;
   roundRemainingDuration: number;
   roundIsEnded: boolean;
+  roundInTransition: boolean;
+  transitionDuration: number;
 };
 
 const justOneRoundSlice = createSlice({
@@ -15,6 +18,15 @@ const justOneRoundSlice = createSlice({
     roundIsEnded: false,
   } as JustOneRoundSlice,
   reducers: {
+    startRoundTransition: (state, payload) => {
+      state.roundInTransition = true;
+      state.transitionDuration = payload.payload;
+    },
+    endRoundTransition: (state) => {
+      state.roundInTransition = false;
+      state.roundIsEnded = false;
+      state.hint = "";
+    },
     endRound: (state) => {
       state.roundIsEnded = true;
     },
@@ -32,7 +44,6 @@ const justOneRoundSlice = createSlice({
     },
     resetRound: (state) => {
       state.hint = "";
-      state.isGuessing = false;
       state.roundIsEnded = false;
     },
     initRound: (state, action) => {
@@ -41,6 +52,9 @@ const justOneRoundSlice = createSlice({
       state.roundIsEnded = false;
       state.roundRemainingDuration = action.payload.roundDuration;
     },
+    updateWordToGuess: (state, action) => {
+      state.wordToGuess = action.payload;
+    },
   },
   selectors: {
     getHint: (state): string => state.hint,
@@ -48,6 +62,9 @@ const justOneRoundSlice = createSlice({
     getRoundRemainingDuration: (state): number => state.roundRemainingDuration,
     getJustOneRound: (state): JustOneRoundSlice => state,
     isRoundEnded: (state): boolean => state.roundIsEnded,
+    isRoundInTransition: (state): boolean => state.roundInTransition,
+    getTransitionDuration: (state): number => state.transitionDuration,
+    getWordToGuess: (state): string => state.wordToGuess,
   },
 });
 
@@ -58,6 +75,9 @@ export const {
   updateHint,
   resetRound,
   updateIsGuessing,
+  startRoundTransition,
+  endRoundTransition,
+  updateWordToGuess,
 } = justOneRoundSlice.actions;
 export const {
   getRoundRemainingDuration,
@@ -65,5 +85,8 @@ export const {
   getJustOneRound,
   getHint,
   getIsGuessing,
+  isRoundInTransition,
+  getTransitionDuration,
+  getWordToGuess,
 } = justOneRoundSlice.selectors;
 export default justOneRoundSlice.reducer;

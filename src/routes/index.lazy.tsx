@@ -3,6 +3,7 @@ import { ChangeEvent, useState } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
+import { GameName } from "../components/shared/GameName.tsx";
 
 library.add(faTrash);
 
@@ -44,10 +45,7 @@ function Index() {
   return (
     <main className="min-h-[100dvh] w-full flex flex-col items-center justify-center">
       <div className={"flex flex-col items-center justify-center p-4"}>
-        <section className={"flex flex-col items-center justify-center py-2"}>
-          <h1 className={"text-3xl text-primary"}>Just One</h1>
-          <h2 className={"text-2xl text-secondary"}>Édition Romain</h2>
-        </section>
+        <GameName />
         <fieldset className={"w-full py-2"}>
           <legend className={"w-full"}>Code de la partie</legend>
           <input

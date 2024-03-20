@@ -2,13 +2,14 @@ import { useReceiveMessage } from "../../hooks/useReceiveMessage.ts";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getCurrentRound,
+  getGameConfig,
   updateCurrentRound,
 } from "../../store/justOneGame.slice.ts";
 
 export function RoundDisplay() {
   const nextRoundMessage = useReceiveMessage("justone-next-round");
-  const currentRound = useSelector(getCurrentRound);
+
+  const { currentRound, nbRounds, gameIsEnded } = useSelector(getGameConfig);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -18,11 +19,18 @@ export function RoundDisplay() {
   }, [nextRoundMessage]);
 
   return (
-    <div className="flex justify-center items-center">
-      <div className="flex justify-center items-center w-12 h-12 bg-white rounded-full">
-        <p className="text-3xl font-bold">{currentRound}</p>
-      </div>
-      <p className="text-2xl font-bold ml-2">/ 30</p>
-    </div>
+    <>
+      {!gameIsEnded && (
+        <div className="flex justify-center items-center gap-2">
+          <p className="text-5xl font-bold">{currentRound}</p>
+          <p className="text-4xl font-bold">/ {nbRounds}</p>
+        </div>
+      )}
+      {gameIsEnded && (
+        <div className="flex justify-center items-center">
+          <p className="text-3xl font-bold">Fin de la partie !</p>
+        </div>
+      )}
+    </>
   );
 }

@@ -1,10 +1,16 @@
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import { useSelector } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getName } from "../store/name.slice";
 import { useEffect } from "react";
 import { useReceiveStartGameMessage } from "../hooks/useReceiveStartGameMessage.ts";
 import { useSendMessage } from "../hooks/useSendMessage.ts";
+import { NavigationControl } from "../components/shared/NavigationControl.tsx";
+import { RoundTransitionScreen } from "../components/justOne/RoundTransitionScreen.tsx";
+import { useReceiveMessage } from "../hooks/useReceiveMessage.ts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  endRoundTransition,
+  isRoundInTransition,
+  startRoundTransition,
+} from "../store/justOneRound.slice.ts";
 
 export const Route = createLazyFileRoute("/hub/$gameId")({
   component: Hub,
@@ -13,10 +19,32 @@ export const Route = createLazyFileRoute("/hub/$gameId")({
 function Hub() {
   const navigate = useNavigate();
   const { gameId } = Route.useParams();
-  const name = useSelector(getName);
+  const name =
+    localStorage.getItem("name") ?? "todo, rediriger vers la page de login";
+
+  const dispatch = useDispatch();
 
   const sendLeaveMessage = useSendMessage("leave-game");
   const gameStartedMessage = useReceiveStartGameMessage(gameId);
+
+  const startGameRoundTransitionmessage = useReceiveMessage(
+    "justone-round-transition",
+  );
+  const isInRoundTransition = useSelector(isRoundInTransition);
+
+  useEffect(() => {
+    if (startGameRoundTransitionmessage) {
+      dispatch(
+        startRoundTransition(
+          startGameRoundTransitionmessage.transitionDuration,
+        ),
+      );
+      setTimeout(() => {
+        dispatch(endRoundTransition());
+        navigate({ to: "/justone/$gameId", params: { gameId } });
+      }, startGameRoundTransitionmessage.transitionDuration * 1000);
+    }
+  }, [startGameRoundTransitionmessage]);
 
   useEffect(() => {
     if (
@@ -71,17 +99,27 @@ function Hub() {
 
   return (
     <main className="min-h-[100dvh] w-full flex flex-col items-center justify-center">
-      <FontAwesomeIcon
-        icon={["fas", "arrow-left"]}
-        onClick={goBack}
-        color={"#000"}
-      ></FontAwesomeIcon>
-      <div className={"flex flex-col items-center justify-center p-4"}>
-        <h1>
-          Vous êtes connecté à la partie {gameId} en tant que {name}
-        </h1>
-        <h2>Veuillez attendre que le maitre de jeu lance la partie</h2>
-      </div>
+      {!isInRoundTransition && (
+        <>
+          <NavigationControl className={"justify-self-start"} />
+          <div
+            className={"flex-1 flex flex-col items-center justify-center gap-8"}
+          >
+            <h1
+              className={
+                "card bg-primary-content border-primary border-2 p-4 text-4xl w-full"
+              }
+            >
+              Code de la partie <span className={"text-5xl"}>{gameId}</span>
+            </h1>
+
+            <h2 className={"text-3xl"}>
+              Veuillez attendre que le maitre de jeu lance la partie
+            </h2>
+          </div>
+        </>
+      )}
+      {isInRoundTransition && <RoundTransitionScreen />}
     </main>
   );
 }

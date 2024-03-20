@@ -1,5 +1,3 @@
-import { WebSocketTopic } from "./WebSocketTopic.ts";
-
 type JoinGameMessageResponse = {
   name: string;
   gameCode: string;
@@ -23,15 +21,20 @@ type JustOneNextRoundMessageResponse = {
   gameCode: string;
 };
 
+type JustOneRoundTransitionMessageResponse = {
+  transitionDuration: number;
+};
+
 export type MessageResponseMap = {
   "join-game": JoinGameMessageResponse;
   "leave-game": LeaveGameMessageResponse;
   "start-game": StartGameMessageResponse;
   "justone-round-time": JustOneRoundTimeMessageResponse;
+  "justone-round-transition": JustOneRoundTransitionMessageResponse;
   "justone-next-round": JustOneNextRoundMessageResponse;
 };
 
-type WebsocketMessageResponse<T extends WebSocketTopic> = {
+type WebsocketMessageResponse<T extends keyof MessageResponseMap> = {
   topic: T;
   message: MessageResponseMap[T];
 };

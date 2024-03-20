@@ -1,5 +1,3 @@
-import { WebSocketTopic } from "./WebSocketTopic.ts";
-
 type JoinGameMessageBody = {
   name: string;
   gameCode: string;
@@ -24,9 +22,10 @@ export type MessageBodyMap = {
   "start-game": StartGameMessageBody;
   "justone-round-time": JustOneRoundTimeMessageBody;
   "justone-next-round": JustOneNextRoundMessageBody;
+  "justone-round-transition": never;
 };
 
-export type WebsocketMessageBody<T extends WebSocketTopic> = {
+export type WebsocketMessageBody<T extends keyof MessageBodyMap> = {
   topic: T;
   message: MessageBodyMap[T];
 };

@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#app, html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    min-height: 100dvh;
+    max-height: 100dvh;
+
+}
+
+#route-base {
+    display: flex;
+    flex-direction: column;
+}
+
